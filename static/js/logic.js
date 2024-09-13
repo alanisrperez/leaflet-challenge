@@ -57,9 +57,32 @@ fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_mon
  });
 
 // Create legend
-let legend = L.control({
-    position: "bottomright"
-});
+let legend = L.control({ position: "bottomright" });
+
+legend.onAdd = function() {
+    let div = L.DomUtil.create("div", "info legend");
+    let depths = [0, 10, 30, 50, 70, 90];
+    let colors = [
+        '#a3f600', // -10-10
+        '#dcf400', // 10-30
+        '#f7db11', // 30-50
+        '#fdb72a', // 50-70
+        '#fca35d', // 70-90
+        '#ff5e64'  // 90+
+    ];
+    
+    // Add legend title
+    let legendInfo = "<h4>Depth (km)</h4>";
+    div.innerHTML = legendInfo;
+
+    // Loop through depth intervals and colors
+    for (let i = 0; i < depths.length; i++) {
+        div.innerHTML +=
+            '<i style="background:' + colors[i] + '; width: 20px; height: 20px; display: inline-block; margin-right: 5px;"></i> ' +
+            (depths[i] === depths[depths.length - 1] ? '+' + depths[i] : depths[i] + (depths[i + 1] ? ' - ' + depths[i + 1] : '')) + '<br>';
+    }
+    return div;
+};
 
 // Add the legend to the map
-legend.addTo(map);
+legend.addTo(Map);
